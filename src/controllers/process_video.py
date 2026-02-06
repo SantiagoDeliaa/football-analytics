@@ -13,6 +13,32 @@ from src.controllers.tactical_metrics import TacticalMetricsCalculator, Tactical
 from ultralytics import YOLO
 
 
+def convert_to_native_types(obj):
+    """
+    Convierte tipos de NumPy a tipos nativos de Python para serialización JSON.
+
+    Args:
+        obj: Objeto a convertir (puede ser dict, list, ndarray, float32, etc.)
+
+    Returns:
+        Objeto con tipos nativos de Python
+    """
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, (np.float32, np.float64)):
+        return float(obj)
+    elif isinstance(obj, (np.int32, np.int64)):
+        return int(obj)
+    elif isinstance(obj, dict):
+        return {key: convert_to_native_types(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_to_native_types(item) for item in obj]
+    elif isinstance(obj, tuple):
+        return tuple(convert_to_native_types(item) for item in obj)
+    else:
+        return obj
+
+
 def extract_color_features(frame: np.ndarray, bbox: np.ndarray) -> Dict[str, np.ndarray]:
     """
     Extrae características de color de una persona, separando camiseta y pantalón.
@@ -1106,7 +1132,9 @@ def process_video(
 
         stats_path = Path(target_path).parent / f"{Path(target_path).stem}_stats.json"
         with open(stats_path, 'w') as f:
-            json.dump(stats_data, f, indent=2)
+            # Convertir tipos de NumPy a tipos nativos de Python
+            stats_data_converted = convert_to_native_types(stats_data)
+            json.dump(stats_data_converted, f, indent=2)
         print(f"Estadísticas guardadas en: {stats_path}")
 
     finally:
