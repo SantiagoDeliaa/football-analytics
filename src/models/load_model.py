@@ -58,8 +58,5 @@ def load_roboflow_model(model_type: str = "yolov8m"):
 
 @lru_cache(maxsize=1)
 def load_model(name: str):
-<<<<<<< HEAD
-=======
     """Carga y cachea el modelo YOLO indicado por nombre (legacy support)."""
->>>>>>> e34054e58946ecdd25496ad543382fd11f57f441
     return YOLO(name)
