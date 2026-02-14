@@ -19,6 +19,10 @@ import os
 from pathlib import Path
 import argparse
 from SoccerNet.Downloader import SoccerNetDownloader
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 
 def main():
