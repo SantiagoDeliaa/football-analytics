@@ -1,8 +1,6 @@
-import streamlit as st
+from functools import lru_cache
 from ultralytics import YOLO
 
-
-@st.cache_resource
+@lru_cache(maxsize=1)
 def load_model(name: str):
-    """Carga y cachea el modelo YOLO indicado por nombre."""
     return YOLO(name)
